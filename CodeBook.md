@@ -27,9 +27,27 @@ To scope variables used for processing definition of function
 >load_data_set <- function () { ... }
 
 is used.
+Following variables allow to adjust for different folder layout:
+```
+pathToDataSet <- "./UCI HAR Dataset"
+folderTrainData <- "train"
+folderTestData <- "test"
+```
 
+Then block of calculated file names variables prefixed with **fn** defines actual input file names:
+```
+fnFeatures 
+fnActivities 
+fnTrnData 
+fnTrnLabels 
+fnTrnSubj
+fnTstData
+fnTstLabels
+fnTstSubj
+``` 
+Train data set files have **Trn** in their name; test files have **Tst** correspondingly.
 
-## Input data
+## Input data and preparation
 **UCI HAR Dataset** includes the following files (as described in data set README.txt):
 * 'README.txt': Description of dataset.
 * 'features_info.txt': Describes variables used on the feature (measurement) vector.
@@ -49,8 +67,69 @@ Other files from data set are **not** used (y and z axis too):
 * 'test/Inertial Signals/body_acc_x_test.txt'
 * 'test/Inertial Signals/body_gyro_x_test.txt'
 
+First of all names of measurements and map of activity codes to their names are loaded into **featureNames** variable.
+Then map and corresponding list of names containing "mean" or "std" is created:
+```
+1 tBodyAcc-mean()-X
+2 tBodyAcc-mean()-Y
+3 tBodyAcc-mean()-Z
+4 tBodyAcc-std()-X
+5 tBodyAcc-std()-Y
+6 tBodyAcc-std()-Z
+41 tGravityAcc-mean()-X
+42 tGravityAcc-mean()-Y
+43 tGravityAcc-mean()-Z
+44 tGravityAcc-std()-X
+45 tGravityAcc-std()-Y
+46 tGravityAcc-std()-Z
+.... #67 more measurements variables names to be used
+```
 
+Next map of activity codes to their names are loaded into **activityLabels** variable and indexed by activity code.
 
-## Data transformations
+## Read of measurement data
+Read of measurement data is performed by using inner function
+> readUCIDataSet <- function(fileName, fnLabels, fnSubj) { ... }
 
+Function takes three parameters:
+* fileName - path to measurement data file
+* fnLabels - path to activity data file
+* fnSubj - path to subject data file
+
+To get fast read of fixed format data laf_open_fwf() is used, feature names assigned to columns and second dataframe with only needed features (columns) is created by subsetting.
+Then activity data read and after mapping via **activityLabels** added to the dataframe of data set.
+Lastly subject data is read and added to the dataframe. 
+
+Training and test data sets are read separately, merged by using rbindlist(...) and returned as single dataframe as a result of execution of load_data_set().
+ 
 ## Tidy data set
+Tidy data set is created by grouping and summarising original data set:
+```
+tidyGroups <- dtAllData %>% group_by(activity,subject) %>% summarise_each(funs(mean))
+tidyActivity <- select(dtAllData, -(subject)) %>% group_by(activity) %>% summarise_each(funs(mean))
+tidySubject <- select(dtAllData, -(activity)) %>% group_by(subject) %>% summarise_each(funs(mean))
+```
+
+As a result three datasets are produced:
+* tidyGroups: contains averages calculated by grouping measurements by (activity, subject) pairs
+* tidyActivity: contains averages calculated by grouping measurements only by activity
+* tidySubject: contains averages calculated by grouping measurements only by subject
+
+Last two data sets have no subject and activity data - it will be replaced (filled in) by NA's.
+All three tidy data sets are merged and NA's added to the missing values.
+Lastly, all column names in the tidy data set, except activity and subject, get new names by prefixing original names with 'avg-':
+```
+avg-tBodyAcc-mean()-X
+avg-tBodyAcc-mean()-Y
+avg-tBodyAcc-mean()-Z
+avg-tBodyAcc-std()-X
+avg-tBodyAcc-std()-Y
+avg-tBodyAcc-std()-Z
+...
+```
+
+## Results
+
+* **dtAllData** - train and test data set mean and standard deviation measurement values with subject and activity values
+* **tidyData** - averaged measurement values for groups { (activity, subject); (activity); (subject) }
+ 
