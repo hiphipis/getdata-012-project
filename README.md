@@ -13,6 +13,7 @@ It is required to submit as the results of this project:
 ## Tidy data set
 Tidy data set has been written to the file by using
 > write.table(tidyData, "tidy_data.txt", use.names=F)
+
 and is included in the repository subfolder _data_ . For the description of data set see CodeBook.md
 
 ## Link to Github repository
@@ -37,7 +38,7 @@ Note - export of tidy data set to file is *not* part of this script and is perfo
 To run script you should get source data set
 > https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
 
-and unzip it into the same folder as script file. You should get folder named *UCI HAR Dataset* and subfolders for test and training data - this the default layout script expects.
+and unzip it into the same folder as script file. You should get folder named **UCI HAR Dataset** and subfolders for test and training data - this the default layout script expects.
 If you have different layout, then you should update script variables named
 
 ```
