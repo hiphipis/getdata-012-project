@@ -49,7 +49,7 @@ fnTstSubj
 Train data set files have **Trn** in their name; test files have **Tst** correspondingly.
 
 ## Input data and preparation
-**UCI HAR Dataset** includes the following files (as described in data set README.txt):
+**'UCI HAR Dataset'** includes the following files (as described in data set README.txt):
 * 'README.txt': Description of dataset.
 * 'features_info.txt': Describes variables used on the feature (measurement) vector.
 * 'features.txt': List of all features (or variables) - to be used as column names.
