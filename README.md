@@ -36,9 +36,11 @@ Note - export of tidy data set to file is *not* part of this script and is perfo
 
 To run script you should get source data set
 > https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+
 and unzip it into the same folder as script file. You should get folder named *UCI HAR Dataset* and subfolders for test and training data - this the default layout script expects.
 If you have different layout, then you should update script variables named
-'''
+
+```
 pathToDataSet <- "./UCI HAR Dataset"
 folderTrainData <- "train"
 folderTestData <- "test"
@@ -53,6 +55,6 @@ fnTrnSubj <- paste(pathToDataSet, folderTrainData, "subject_train.txt", sep="/")
 fnTstData <- paste(pathToDataSet, folderTestData, "X_test.txt", sep="/")
 fnTstLabels <- paste(pathToDataSet, folderTestData, "y_test.txt", sep="/")
 fnTstSubj <- paste(pathToDataSet, folderTestData, "subject_test.txt", sep="/")
-'''
+```
 
 For the detailed description of transformations please see CodeBook.md
